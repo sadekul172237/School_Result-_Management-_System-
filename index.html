@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BARA AWLIA IDEAL KINDERGARTEN & HIGH SCHOOL – Result Management System</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Mobile Header -->
+    <header class="mobile-topbar no-print">
+      <button id="mobileMenuBtn" class="icon-btn" aria-label="Toggle Menu">&#9776;</button>
+      <div class="mobile-brand">
+        <span class="school-short-title">BARA AWLIA IDEAL SCHOOL</span>
+      </div>
+    </header>
+
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="sidebar no-print">
+      <div class="sidebar-header">
+        <div class="logo-box" id="sidebarLogoContainer">
+          <img id="sidebarLogoImg" src="" alt="School Logo" class="hidden" />
+          <div id="sidebarLogoPlaceholder" class="logo-placeholder">BA</div>
+        </div>
+        <div class="school-identity">
+          <h1 id="headerSchoolName">BARA AWLIA IDEAL KINDERGARTEN & HIGH SCHOOL</h1>
+          <p class="subtitle">Result Management System</p>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="Main Navigation">
+        <button class="nav-item active" data-section="dashboard">
+          <span class="nav-icon">&#128202;</span> Dashboard
+        </button>
+        <button class="nav-item" data-section="students-marks">
+          <span class="nav-icon">&#127891;</span> Students &amp; Marks
+        </button>
+        <button class="nav-item" data-section="grading-rules">
+          <span class="nav-icon">&#9881;</span> Grading Rules
+        </button>
+        <button class="nav-item" data-section="merit-list">
+          <span class="nav-icon">&#127942;</span> Merit List
+        </button>
+        <button class="nav-item" data-section="marksheet">
+          <span class="nav-icon">&#128196;</span> Individual Marksheet
+        </button>
+        <button class="nav-item" data-section="backup-data">
+          <span class="nav-icon">&#128190;</span> Backup &amp; Data
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="storage-badge">
+          <span class="dot"></span> Local Browser Storage
+        </div>
+        <small>Data persists locally on this device &amp; browser.</small>
+      </div>
+    </aside>
+
+    <!-- Main Workspace -->
+    <main class="main-content">
+      <!-- Global Notification Banner -->
+      <div id="toastContainer" class="toast-container no-print" aria-live="polite"></div>
+
+      <!-- SECTION 1: DASHBOARD -->
+      <section id="section-dashboard" class="view-section active">
+        <div class="section-header">
+          <div>
+            <h2>School Result Dashboard</h2>
+            <p class="muted">Real-time academic summary for BARA AWLIA IDEAL KINDERGARTEN &amp; HIGH SCHOOL</p>
+          </div>
+          <div class="header-actions">
+            <label for="schoolLogoInput" class="btn btn-outline btn-sm">
+              &#128247; Upload School Logo
+            </label>
+            <input type="file" id="schoolLogoInput" accept="image/*" class="hidden" />
+            <button id="removeLogoBtn" class="btn btn-danger-outline btn-sm hidden">Remove Logo</button>
+          </div>
+        </div>
+
+        <!-- School Profile / Exam Settings Card -->
+        <div class="card">
+          <div class="card-header">
+            <h3>School &amp; Examination Header Settings</h3>
+          </div>
+          <form id="schoolSettingsForm" class="grid-form cols-3">
+            <div class="form-group">
+              <label for="settingSchoolName">School Name</label>
+              <input type="text" id="settingSchoolName" value="BARA AWLIA IDEAL KINDERGARTEN & HIGH SCHOOL" required />
+            </div>
+            <div class="form-group">
+              <label for="settingSchoolAddress">Address / Location (Optional)</label>
+              <input type="text" id="settingSchoolAddress" placeholder="e.g., Kumira, Sitakunda, Chattogram" />
+            </div>
+            <div class="form-group">
+              <label for="settingDefaultExam">Default Examination Name</label>
+              <input type="text" id="settingDefaultExam" placeholder="e.g., Annual Examination" />
+            </div>
+            <div class="form-group">
+              <label for="settingDefaultYear">Default Academic Year</label>
+              <input type="text" id="settingDefaultYear" placeholder="e.g., 2026" />
+            </div>
+            <div class="form-group">
+              <label for="settingPrincipalTitle">Signatory Title on Marksheet</label>
+              <input type="text" id="settingPrincipalTitle" value="Head Teacher / Principal" />
+            </div>
+            <div class="form-group form-align-end">
+              <button type="submit" class="btn btn-primary">Save School Settings</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- KPI Metrics -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-label">Total Students</span>
+            <strong class="stat-value" id="statTotalStudents">0</strong>
+            <span class="stat-note">Unique registered students</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Total Result Records</span>
+            <strong class="stat-value" id="statTotalRecords">0</strong>
+            <span class="stat-note">Saved examination sheets</span>
+          </div>
+          <div class="stat-card stat-pass">
+            <span class="stat-label">Total Passed Students</span>
+            <strong class="stat-value" id="statTotalPassed">0</strong>
+            <span class="stat-note">Passed all required subjects</span>
+          </div>
+          <div class="stat-card stat-fail">
+            <span class="stat-label">Total Failed Students</span>
+            <strong class="stat-value" id="statTotalFailed">0</strong>
+            <span class="stat-note">Failed one or more subjects</span>
+          </div>
+        </div>
+
+        <!-- Recent Result Records -->
+        <div class="card">
+          <div class="card-header">
+            <h3>Recent Result Records</h3>
+            <button class="btn btn-primary btn-sm" data-nav-target="students-marks">+ Add Student &amp; Marks</button>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Student ID</th>
+                  <th>Roll</th>
+                  <th>Student Name</th>
+                  <th>Class &amp; Group</th>
+                  <th>Exam &amp; Year</th>
+                  <th>Total Marks</th>
+                  <th>GPA</th>
+                  <th>Grade</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="recentRecordsBody">
+                <tr>
+                  <td colspan="10" class="empty-state">No result records saved yet. Go to "Students &amp; Marks" to enter student records.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 2: STUDENTS & MARKS -->
+      <section id="section-students-marks" class="view-section">
+        <div class="section-header">
+          <div>
+            <h2>Students &amp; Subject Marks Management</h2>
+            <p class="muted">Enter student details, configure subjects &amp; components (MCQ, CQ, Practical, etc.), and calculate NCTB-style GPA automatically.</p>
+          </div>
+          <button type="button" id="resetStudentFormBtn" class="btn btn-outline">New / Clear Form</button>
+        </div>
+
+        <form id="studentResultForm" class="card">
+          <input type="hidden" id="editingRecordId" value="" />
+          <div class="card-header">
+            <h3 id="studentFormTitle">1. Student &amp; Examination Information</h3>
+            <span id="activeRuleBadge" class="badge badge-info">Rule: Default NCTB Scale</span>
+          </div>
+
+          <div class="grid-form cols-4">
+            <div class="form-group">
+              <label for="studentName">Student Name *</label>
+              <input type="text" id="studentName" placeholder="Full Name" required />
+            </div>
+            <div class="form-group">
+              <label for="studentId">Student ID *</label>
+              <input type="text" id="studentId" placeholder="e.g., BA-2026-001" required />
+            </div>
+            <div class="form-group">
+              <label for="rollNumber">Roll Number *</label>
+              <input type="text" id="rollNumber" placeholder="e.g., 1" required />
+            </div>
+            <div class="form-group">
+              <label for="studentClass">Class *</label>
+              <select id="studentClass" required>
+                <option value="Play">Play</option>
+                <option value="Nursery">Nursery</option>
+                <option value="Class 1">Class 1</option>
+                <option value="Class 2">Class 2</option>
+                <option value="Class 3">Class 3</option>
+                <option value="Class 4">Class 4</option>
+                <option value="Class 5">Class 5</option>
+                <option value="Class 6">Class 6</option>
+                <option value="Class 7">Class 7</option>
+                <option value="Class 8">Class 8</option>
+                <option value="Class 9" selected>Class 9</option>
+                <option value="Class 10">Class 10</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="studentGroup">Group *</label>
+              <select id="studentGroup" required>
+                <option value="General">General</option>
+                <option value="Science">Science</option>
+                <option value="Humanities">Humanities</option>
+                <option value="Business Studies">Business Studies</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="examName">Examination Name *</label>
+              <input type="text" id="examName" placeholder="e.g., Half-Yearly / Annual Exam" required />
+            </div>
+            <div class="form-group">
+              <label for="academicYear">Academic Year *</label>
+              <input type="text" id="academicYear" placeholder="e.g., 2026" required />
+            </div>
+            <div class="form-group">
+              <label for="subjectTemplateSelect">Quick Subject Presets</label>
+              <div class="inline-control">
+                <select id="subjectTemplateSelect">
+                  <option value="">-- Select Preset --</option>
+                  <option value="nctb_secondary">NCTB Secondary (Bangla 1st/2nd, Eng 1st/2nd, Math, etc.)</option>
+                  <option value="primary_general">Primary / Junior (Bangla, English, Math, Science, BGS, Religion)</option>
+                  <option value="kg_basic">Kindergarten (Bangla, English, Math, Drawing/General)</option>
+                </select>
+                <button type="button" id="applyPresetBtn" class="btn btn-outline btn-sm">Load</button>
+              </div>
+            </div>
+          </div>
+
+          <hr class="divider" />
+
+          <div class="card-header">
+            <div>
+              <h3>2. Subjects &amp; Examination Components</h3>
+              <p class="muted small-text">Components (MCQ, CQ, Practical, Viva, etc.) belong to their parent subject and are NOT counted as separate subjects in GPA.</p>
+            </div>
+            <button type="button" id="addSubjectBtn" class="btn btn-primary btn-sm">+ Add Subject</button>
+          </div>
+
+          <div id="subjectsContainer" class="subjects-list"></div>
+
+          <!-- Live Calculation Preview Bar -->
+          <div class="live-summary-bar" id="liveResultPreview">
+            <div class="summary-metric">
+              <span>Grand Total</span>
+              <strong id="previewGrandTotal">0 / 0</strong>
+            </div>
+            <div class="summary-metric">
+              <span>Subjects Evaluated</span>
+              <strong id="previewSubjectCount">0</strong>
+            </div>
+            <div class="summary-metric">
+              <span>GPA (without 4th)</span>
+              <strong id="previewBaseGpa">0.00</strong>
+            </div>
+            <div class="summary-metric">
+              <span>Final GPA</span>
+              <strong id="previewFinalGpa">0.00</strong>
+            </div>
+            <div class="summary-metric">
+              <span>Final Grade</span>
+              <strong id="previewFinalGrade">F</strong>
+            </div>
+            <div class="summary-metric">
+              <span>Result Status</span>
+              <strong id="previewFinalStatus" class="status-pill fail">FAIL</strong>
+            </div>
+          </div>
+
+          <div class="form-actions-bar">
+            <button type="submit" class="btn btn-success btn-lg" id="saveResultBtn">&#128190; Save Examination Result</button>
+          </div>
+        </form>
+
+        <!-- Saved Student Records Table -->
+        <div class="card">
+          <div class="card-header">
+            <h3>Saved Student &amp; Result Records</h3>
+            <div class="filter-bar">
+              <input type="text" id="searchStudentInput" placeholder="Search by Name, ID, Roll, Exam..." />
+              <select id="filterClassSelect">
+                <option value="">All Classes</option>
+                <option value="Play">Play</option>
+                <option value="Nursery">Nursery</option>
+                <option value="Class 1">Class 1</option>
+                <option value="Class 2">Class 2</option>
+                <option value="Class 3">Class 3</option>
+                <option value="Class 4">Class 4</option>
+                <option value="Class 5">Class 5</option>
+                <option value="Class 6">Class 6</option>
+                <option value="Class 7">Class 7</option>
+                <option value="Class 8">Class 8</option>
+                <option value="Class 9">Class 9</option>
+                <option value="Class 10">Class 10</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Student ID</th>
+                  <th>Roll</th>
+                  <th>Student Name</th>
+                  <th>Class (Group)</th>
+                  <th>Exam (Year)</th>
+                  <th>Subjects</th>
+                  <th>Total</th>
+                  <th>GPA</th>
+                  <th>Grade</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="studentRecordsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 3: GRADING RULES -->
+      <section id="section-grading-rules" class="view-section">
+        <div class="section-header">
+          <div>
+            <h2>Configurable NCTB Grading &amp; Pass Rules</h2>
+            <p class="muted">Configure grade scales, component-level pass thresholds, subject weighting, and optional (4th) subject rules by Class, Group, Exam, and Year.</p>
+          </div>
+          <button type="button" id="newRuleBtn" class="btn btn-outline">+ Create New Rule Profile</button>
+        </div>
+
+        <form id="gradingRuleForm" class="card">
+          <input type="hidden" id="editingRuleId" value="" />
+          <div class="card-header">
+            <h3 id="ruleFormTitle">Rule Profile Configuration</h3>
+            <span class="badge badge-warning">Updating a rule automatically recalculates matching saved results</span>
+          </div>
+
+          <div class="grid-form cols-4">
+            <div class="form-group">
+              <label for="ruleProfileName">Rule Profile Name *</label>
+              <input type="text" id="ruleProfileName" placeholder="e.g., NCTB Secondary 2026" required />
+            </div>
+            <div class="form-group">
+              <label for="ruleClass">Applicable Class *</label>
+              <select id="ruleClass">
+                <option value="ALL">All Classes (Default Fallback)</option>
+                <option value="Play">Play</option>
+                <option value="Nursery">Nursery</option>
+                <option value="Class 1">Class 1</option>
+                <option value="Class 2">Class 2</option>
+                <option value="Class 3">Class 3</option>
+                <option value="Class 4">Class 4</option>
+                <option value="Class 5">Class 5</option>
+                <option value="Class 6">Class 6</option>
+                <option value="Class 7">Class 7</option>
+                <option value="Class 8">Class 8</option>
+                <option value="Class 9">Class 9</option>
+                <option value="Class 10">Class 10</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="ruleGroup">Applicable Group *</label>
+              <select id="ruleGroup">
+                <option value="ALL">All Groups</option>
+                <option value="General">General</option>
+                <option value="Science">Science</option>
+                <option value="Humanities">Humanities</option>
+                <option value="Business Studies">Business Studies</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="ruleExamName">Examination Name (Blank = All)</label>
+              <input type="text" id="ruleExamName" placeholder="e.g., Annual Examination" />
+            </div>
+            <div class="form-group">
+              <label for="ruleAcademicYear">Academic Year (Blank = All)</label>
+              <input type="text" id="ruleAcademicYear" placeholder="e.g., 2026" />
+            </div>
+            <div class="form-group">
+              <label for="ruleSubjectPassPercent">Default Subject Pass % *</label>
+              <input type="number" id="ruleSubjectPassPercent" min="0" max="100" step="0.01" value="33" required />
+            </div>
+            <div class="form-group">
+              <label for="ruleComponentPassPercent">Default Component Pass % *</label>
+              <input type="number" id="ruleComponentPassPercent" min="0" max="100" step="0.01" value="33" required />
+            </div>
+            <div class="form-group">
+              <label for="rulePassMode">Default Component Pass Evaluation *</label>
+              <select id="rulePassMode">
+                <option value="individual_and_combined">Require Both Individual Component &amp; Combined Pass</option>
+                <option value="combined_only">Require Combined Subject Marks Only</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid-form cols-3">
+            <div class="form-group">
+              <label for="ruleOptionalEnabled">Optional (4th) Subject Bonus Rule</label>
+              <select id="ruleOptionalEnabled">
+                <option value="true">Enabled (NCTB Standard: GP above threshold added to main subjects)</option>
+                <option value="false">Disabled (Treat all subjects equally)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="ruleOptionalThreshold">Optional Subject GP Threshold (Deducted GP)</label>
+              <input type="number" id="ruleOptionalThreshold" min="0" max="5" step="0.01" value="2.00" />
+            </div>
+            <div class="form-group">
+              <label for="ruleMaxGpa">Maximum GPA Cap</label>
+              <input type="number" id="ruleMaxGpa" min="1" max="10" step="0.01" value="5.00" />
+            </div>
+          </div>
+
+          <div class="card-header">
+            <h4>Grade Scale Table (Configurable)</h4>
+            <button type="button" id="addGradeRowBtn" class="btn btn-outline btn-sm">+ Add Grade Band</button>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Min Percentage (%)</th>
+                  <th>Max Percentage (%)</th>
+                  <th>Letter Grade</th>
+                  <th>Grade Point</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="gradeScaleTableBody"></tbody>
+            </table>
+          </div>
+
+          <div class="form-actions-bar">
+            <button type="submit" class="btn btn-primary">&#10004; Save Grading Rule &amp; Recalculate Results</button>
+          </div>
+        </form>
+
+        <!-- Saved Grading Rules List -->
+        <div class="card">
+          <div class="card-header">
+            <h3>Saved Grading Rule Profiles</h3>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Profile Name</th>
+                  <th>Scope (Class / Group / Exam / Year)</th>
+                  <th>Pass Thresholds</th>
+                  <th>Evaluation Mode</th>
+                  <th>Optional Subject</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="savedRulesTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 4: MERIT LIST -->
+      <section id="section-merit-list" class="view-section">
+        <div class="section-header">
+          <div>
+            <h2>Class-Wise Merit List</h2>
+            <p class="muted">Generate ranked merit lists sorted strictly by Pass status first, then GPA (descending), then Grand Total Marks (descending).</p>
+          </div>
+          <button type="button" id="exportMeritCsvBtn" class="btn btn-outline" disabled>&#128229; Export Merit List (CSV)</button>
+        </div>
+
+        <div class="card">
+          <div class="grid-form cols-4">
+            <div class="form-group">
+              <label for="meritClassSelect">Select Class *</label>
+              <select id="meritClassSelect">
+                <option value="Play">Play</option>
+                <option value="Nursery">Nursery</option>
+                <option value="Class 1">Class 1</option>
+                <option value="Class 2">Class 2</option>
+                <option value="Class 3">Class 3</option>
+                <option value="Class 4">Class 4</option>
+                <option value="Class 5">Class 5</option>
+                <option value="Class 6">Class 6</option>
+                <option value="Class 7">Class 7</option>
+                <option value="Class 8">Class 8</option>
+                <option value="Class 9" selected>Class 9</option>
+                <option value="Class 10">Class 10</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="meritGroupSelect">Select Group</label>
+              <select id="meritGroupSelect">
+                <option value="ALL">All Groups Combined</option>
+                <option value="General">General</option>
+                <option value="Science">Science</option>
+                <option value="Humanities">Humanities</option>
+                <option value="Business Studies">Business Studies</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="meritExamSelect">Examination Name *</label>
+              <select id="meritExamSelect">
+                <option value="">-- Select Examination --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="meritYearSelect">Academic Year *</label>
+              <select id="meritYearSelect">
+                <option value="">-- Select Year --</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-actions-bar">
+            <button type="button" id="generateMeritBtn" class="btn btn-primary">Generate Merit List</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 id="meritListHeading">Merit List Results</h3>
+            <span class="muted small-text">Ranking Method: Standard Competition Ranking (1, 2, 2, 4) for tied GPA &amp; Total Marks among Passed students.</span>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Merit Position</th>
+                  <th>Student ID</th>
+                  <th>Roll No.</th>
+                  <th>Student Name</th>
+                  <th>Group</th>
+                  <th>Total Marks</th>
+                  <th>GPA</th>
+                  <th>Final Grade</th>
+                  <th>Final Result</th>
+                  <th>Marksheet</th>
+                </tr>
+              </thead>
+              <tbody id="meritListTableBody">
+                <tr>
+                  <td colspan="10" class="empty-state">Select Class, Examination, and Academic Year, then click "Generate Merit List".</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 5: INDIVIDUAL MARKSHEET -->
+      <section id="section-marksheet" class="view-section">
+        <div class="section-header no-print">
+          <div>
+            <h2>Individual Academic Transcript / Marksheet</h2>
+            <p class="muted">Search by Student Name, Student ID, or Roll Number to view and print an A4 official marksheet.</p>
+          </div>
+          <div class="header-actions">
+            <button type="button" id="printMarksheetBtn" class="btn btn-primary" disabled>&#128424; Print / Save as PDF</button>
+          </div>
+        </div>
+
+        <div class="card no-print">
+          <div class="grid-form cols-3">
+            <div class="form-group">
+              <label for="marksheetSearchInput">Search Student (Name, ID, or Roll)</label>
+              <input type="text" id="marksheetSearchInput" placeholder="Type name, ID, or roll number..." />
+            </div>
+            <div class="form-group">
+              <label for="marksheetSelectDropdown">Select Matching Result Record</label>
+              <select id="marksheetSelectDropdown">
+                <option value="">-- Choose a Student Result Record --</option>
+              </select>
+            </div>
+            <div class="form-group form-align-end">
+              <button type="button" id="loadMarksheetBtn" class="btn btn-primary">Load Marksheet</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Printable A4 Marksheet Container -->
+        <div id="marksheetPrintableArea" class="marksheet-wrapper">
+          <div class="empty-marksheet-notice">
+            Select a student result record above to generate the official A4 marksheet.
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 6: BACKUP & DATA -->
+      <section id="section-backup-data" class="view-section">
+        <div class="section-header">
+          <div>
+            <h2>Data Backup, Export &amp; Maintenance</h2>
+            <p class="muted">Manage local browser data, download JSON backups, restore records, and export CSV reports.</p>
+          </div>
+        </div>
+
+        <div class="info-callout">
+          <strong>LocalStorage Persistence Notice:</strong> All data in this standalone edition is stored inside your current web browser's LocalStorage on this device. Clearing browser site data will erase records unless you download a JSON backup. Multiple devices or browsers do not sync automatically.
+        </div>
+
+        <div class="grid-cards cols-2">
+          <div class="card">
+            <h3>&#128230; JSON Full System Backup &amp; Restore</h3>
+            <p class="muted">Export all student results, grading rules, and school settings into a portable JSON file, or restore from a previous backup.</p>
+            <div class="button-stack">
+              <button type="button" id="downloadJsonBackupBtn" class="btn btn-primary">Download Full JSON Backup</button>
+              <label for="restoreJsonInput" class="btn btn-outline">
+                &#128194; Restore from JSON File
+              </label>
+              <input type="file" id="restoreJsonInput" accept=".json,application/json" class="hidden" />
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>&#128202; CSV Spreadsheet Exports</h3>
+            <p class="muted">Export structured CSV files compatible with Microsoft Excel, LibreOffice Calc, and Google Sheets.</p>
+            <div class="button-stack">
+              <button type="button" id="exportAllResultsCsvBtn" class="btn btn-success">Export All Student Result Records (CSV)</button>
+              <button type="button" class="btn btn-outline" data-nav-target="merit-list">Go to Merit List CSV Export &rarr;</button>
+            </div>
+          </div>
+
+          <div class="card danger-zone-card">
+            <h3>&#9888; Danger Zone: Reset Application Data</h3>
+            <p class="muted">Permanently delete all saved student records, custom grading rules, and uploaded school logo from this browser's LocalStorage.</p>
+            <div class="button-stack">
+              <button type="button" id="clearAllDataBtn" class="btn btn-danger">Clear All Application Data</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div id="confirmModal" class="modal-backdrop hidden no-print" role="dialog" aria-modal="true">
+    <div class="modal-box">
+      <h3 id="confirmModalTitle">Confirm Action</h3>
+      <p id="confirmModalMessage">Are you sure you want to proceed?</p>
+      <div class="modal-actions">
+        <button type="button" id="confirmCancelBtn" class="btn btn-outline">Cancel</button>
+        <button type="button" id="confirmOkBtn" class="btn btn-danger">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
