@@ -1728,3 +1728,181 @@
     renderDashboard();
   });
 })();
+(function () {
+
+  const appShell = document.getElementById("appShell");
+  const loginScreen = document.getElementById("loginScreen");
+
+  const loginForm = document.getElementById("loginForm");
+  const loginError = document.getElementById("loginError");
+
+  const logoutBtn = document.getElementById("logoutBtn");
+  const changeBtn = document.getElementById("changeCredentialsBtn");
+
+  const STORAGE_KEY = "BA_ADMIN_CREDENTIALS";
+  const SESSION_KEY = "BA_ADMIN_AUTH_SESSION";
+
+  // Default Admin Credentials
+  const DEFAULT_CREDENTIALS = {
+    id: "Md Shawon",
+    password: "@172237#"
+  };
+
+  // Initialize default credentials
+  function getCredentials() {
+    let credentials = localStorage.getItem(STORAGE_KEY);
+
+    if (!credentials) {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(DEFAULT_CREDENTIALS)
+      );
+
+      return DEFAULT_CREDENTIALS;
+    }
+
+    try {
+      const parsed = JSON.parse(credentials);
+
+      if (
+        typeof parsed.id !== "string" ||
+        typeof parsed.password !== "string"
+      ) {
+        throw new Error("Invalid credentials");
+      }
+
+      return parsed;
+
+    } catch (error) {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(DEFAULT_CREDENTIALS)
+      );
+
+      return DEFAULT_CREDENTIALS;
+    }
+  }
+
+  // Show Dashboard
+  function showDashboard() {
+    loginScreen.classList.add("hidden");
+    appShell.classList.remove("hidden");
+    loginError.textContent = "";
+  }
+
+  // Show Login Screen
+  function showLogin() {
+    sessionStorage.removeItem(SESSION_KEY);
+
+    appShell.classList.add("hidden");
+    loginScreen.classList.remove("hidden");
+
+    loginForm.reset();
+    loginError.textContent = "";
+  }
+
+  // Check Existing Session
+  if (sessionStorage.getItem(SESSION_KEY) === "authenticated") {
+    showDashboard();
+  } else {
+    showLogin();
+  }
+
+  // Login Validation
+  loginForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const enteredId = document
+      .getElementById("loginId").value.trim();
+
+    const enteredPassword = document
+      .getElementById("loginPassword").value;
+
+    const credentials = getCredentials();
+
+    if (
+      enteredId === credentials.id &&
+      enteredPassword === credentials.password
+    ) {
+      sessionStorage.setItem(
+        SESSION_KEY,
+        "authenticated"
+      );
+
+      showDashboard();
+
+    } else {
+      loginError.textContent =
+        "Incorrect Login ID or Password!";
+
+      document.getElementById("loginPassword").value = "";
+    }
+  });
+
+  // Logout
+  logoutBtn.addEventListener("click", function () {
+
+    if (confirm("Are you sure you want to Logout?")) {
+      showLogin();
+    }
+
+  });
+
+  // Change Login ID and Password
+  changeBtn.addEventListener("click", function () {
+
+    const credentials = getCredentials();
+
+    const currentPassword = prompt(
+      "Enter your current password:"
+    );
+
+    if (currentPassword === null) return;
+
+    if (currentPassword !== credentials.password) {
+      alert("Incorrect current password!");
+      return;
+    }
+
+    const newId = prompt(
+      "Enter New Login ID:",
+      credentials.id
+    );
+
+    if (newId === null) return;
+
+    const newPassword = prompt(
+      "Enter New Password (Minimum 8 Characters):"
+    );
+
+    if (newPassword === null) return;
+
+    if (!newId.trim() || newPassword.length < 8) {
+      alert("Invalid Login ID or Password!");
+      return;
+    }
+
+    const confirmPassword = prompt(
+      "Confirm New Password:"
+    );
+
+    if (confirmPassword !== newPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+
+    const updatedCredentials = {
+      id: newId.trim(),
+      password: newPassword
+    };
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(updatedCredentials)
+    );
+
+    alert("Login ID and Password Updated Successfully!");
+
+  });
+
+})();
