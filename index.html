@@ -7,6 +7,38 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <div class="login-logo">BA</div>
+
+    <h2>Admin Login</h2>
+    <p>BARA AWLIA IDEAL KINDERGARTEN & HIGH SCHOOL</p>
+
+    <form id="loginForm">
+      <div class="login-group">
+        <label>Login ID</label>
+        <input type="text" id="loginId"
+          placeholder="Enter Login ID" required>
+      </div>
+
+      <div class="login-group">
+        <label>Password</label>
+        <input type="password" id="loginPassword"
+          placeholder="Enter Password" required>
+      </div>
+
+      <p id="loginError" class="login-error"></p>
+
+      <button type="submit" class="login-submit">
+        Login to Dashboard
+      </button>
+    </form>
+
+    <div class="login-footer">
+      Authorized Admin Access Only
+    </div>
+  </div>
+</div>
   <div class="app-shell">
     <!-- Mobile Header -->
     <header class="mobile-topbar no-print">
